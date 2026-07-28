@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
 from supabase_auth.errors import AuthApiError
-from typing import Annotated
-from info_routers.info_router import oauth2_scheme, UserInfo
+from info_routers.info_router import oauth2_scheme
 
 try:
     from ..supabase_client import supabase_admin_client, supabase_client
@@ -107,13 +106,13 @@ async def login(credentials: AuthCredentials) -> dict:
     }
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
-async def logout(refresh_token: Annotated[UserInfo, Depends(oauth2_scheme)]) -> dict:
+async def logout(request: Request) -> None:
+    oauth2_scheme(request)
+
     try:
-        supabase_client.auth.sign_out(refresh_token)
+        supabase_client.auth.sign_out()
     except AuthApiError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",
-        )
-
-    return {"message": "User logged out successfully"}
+        ) 

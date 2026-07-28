@@ -18,7 +18,7 @@ async def get_public_info() -> dict:
     return {"message": "Welcome stranger! This info is public."}
 
 
-def oauth2_scheme(request: Request) -> str:
+def oauth2_scheme(request: Request) -> UserInfo:
     auth_header = request.headers.get("Authorization")
     if auth_header and auth_header.startswith("Bearer "):
         try:
