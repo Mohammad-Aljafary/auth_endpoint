@@ -46,4 +46,8 @@ async def get_protected_profile(current_user: Annotated[UserInfo, Depends(oauth2
     return {"message": "This is protected profile info.", "user": current_user}  
 
 
-
+@router.get("/protected/dashboard", status_code=status.HTTP_200_OK)
+async def get_protected_dashboard(current_user: Annotated[UserInfo, Depends(oauth2_scheme)]) -> dict:
+    # Here you would normally validate the token and retrieve user info
+    # For demonstration, we'll just return a mock dashboard
+    return {"message": "This is protected dashboard info.", "user": current_user}  
