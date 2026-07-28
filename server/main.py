@@ -1,18 +1,15 @@
 
-from dotenv import load_dotenv
 from fastapi import FastAPI
-from supabase import create_client
-import os
 
-load_dotenv()
-
-supabase_client = create_client(
-    supabase_url=os.getenv("SUPABASE_URL"),
-    supabase_key=os.getenv("SUPABASE_KEY")
-)
+try:
+    from .auth_routers.auth_router import router as auth_router
+except ImportError:
+    from auth_routers.auth_router import router as auth_router
 
 app = FastAPI()
 
+app.include_router(auth_router)
+
 @app.get("/")
-async def root():
+async def root() -> dict:
     return {"message": "Hello World"}
